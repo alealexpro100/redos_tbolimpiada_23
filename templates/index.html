@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="static/7.css">
+  <link rel="stylesheet" href="static/project.css">
+  <script src="static/project.js"></script>
+  <title>RED OS TASKS</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+  <div class="window glass active" style="width: 25em; left: 20%; top: 1%">
+    <div class="title-bar"></div>
+    <div class="window-body has-space" style="text-align: center;">
+      <img src="static/redos_logo.svg" alt="RegOS logo" width="200px" />
+      <div style="font-size: 1.5em;">Задачи интерактивного тестирования</div>
+    </div>
+  </div>
+  </div>
+  <div class="window glass active" style="width: 30em; left: 42%; top: 1%">
+    <div class="title-bar">
+      <div class="title-bar-text">Описание</div>
+    </div>
+    <div class="window-body has-space">
+      <div style="margin-left: 16px;">
+        <div>В каждом задании во окне "Задания на нахождение флагов" Вам нужно будет найти <b>флаг</b>. Флаг представляется в виде "RED_flag_OS".</div>
+        <div>В каждом задании во окне "Задания на автоматическую проверку" Вам нужно будет выполнить указанное в нём задание.</div>
+        <div>Для копирования строки из поля (SSH и пароль) в буфер обмена кликните по ним машью.</div>
+        <div>Окна для удобства можно перемещать :-).</div>
+        <details>
+          <summary>Виды статуса заданий</summary>
+          <ul>
+            <li>Красный - задание не начато</li>
+            <li>Жёлтый - задание в процессе выполнения</li>
+            <li>Зелёный - задание выполнено</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="window glass active" style="width: 40em; left: 5em; top: 20em;">
+    <div class="title-bar">
+      <div class="title-bar-text">Задания на нахождение флагов</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize" disabled></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body has-space">
+      <section class="tabs" style="max-width: 500px">
+        <menu role="tablist" aria-label="Flag-check tasks">
+          {% for task in tasks_list_flag %}
+          <button role="tab" aria-controls="{{ task.id }}" {% if tasks_list_flag[0] == task %} aria-selected="true" {% endif %}>{{ task.name }}</button>
+          {% endfor %}
+        </menu>
+        <!-- the tab content -->
+        {% for task in tasks_list_flag %}
+        <article role="tabpanel" id="{{ task.id }}" {% if tasks_list_flag[0] != task %} hidden {% endif %}>
+          <div>
+            {% autoescape false %}
+            {{ task.text }}
+            {% endautoescape %}
+          </div>
+          <section class="field-row" style="justify-content: flex-end;">
+            <button id="start_{{ task.id }}" class="start_button">Начать выполнение</button>
+          </section>
+          <section class="field-row" style="justify-content: flex-end;">
+            <label for="ssh_cmd_{{ task.id }}">Команда подключения</label>
+            <input id="ssh_cmd_{{ task.id }}" type="text" placeholder="Здесь будет команда" readonly="readonly" class="copy" autocomplete='off'/>
+          </section>
+          <section class="field-row" style="justify-content: flex-end;">
+            <label for="ssh_pass_{{ task.id }}">Пароль</label>
+            <input id="ssh_pass_{{ task.id }}" type="text" placeholder="Здесь будет пароль" readonly="readonly" class="copy" autocomplete='off'/>
+          </section>
+          <section class="field-row" style="justify-content: flex-end;">
+            <label for="flag">Флаг</label>
+            <input id="flag_{{ task.id }}" type="text" autocomplete='off'/>
+            <button id="check_{{ task.id }}" class="check_button" disabled>Проверить</button>
+          </section>
+          <section class="field-row">
+            Статус:
+            <div role="progressbar" style="width: 100%; margin-left: 5px;" class="error animate">
+              <div id="progress_{{ task.id }}" style="width: 0%;"></div>
+            </div>
+          </section>
+          <section class="field-row">
+            Лог:
+            <div style="width: 100%;">
+              <pre id="log_{{ task.id }}" style="margin: 5px; background-color: black; color: #9f9f9f;"></pre>
+            </div>
+          </section>
+        </article>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+  <div class="window glass active" style="width: 40em; left: 50em; top: 20em;">
+    <div class="title-bar">
+      <div class="title-bar-text">Задания на автоматическую проверку</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize" disabled></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body has-space">
+      <section class="tabs" style="max-width: 500px">
+        <menu role="tablist" aria-label="Auto-check tasks">
+          {% for task in tasks_list_auto %}
+          <button role="tab" aria-controls="{{ task.id }}" {% if tasks_list_auto[0] == task %} aria-selected="true" {% endif %}>{{ task.name }}</button>
+          {% endfor %}
+        </menu>
+        <!-- the tab content -->
+        {% for task in tasks_list_auto %}
+        <article role="tabpanel" id="{{ task.id }}" {% if tasks_list_auto[0] != task %} hidden {% endif %}>
+          <div>
+            {% autoescape false %}
+            {{ task.text }}
+            {% endautoescape %}
+          </div>
+          <section class="field-row" style="justify-content: flex-end;">
+            <button id="start_{{ task.id }}" class="start_button">Начать выполнение</button>
+          </section>
+          <section class="field-row" style="justify-content: flex-end;">
+            <label for="ssh_cmd_{{ task.id }}">Команда подключения</label>
+            <input id="ssh_cmd_{{ task.id }}" type="text" placeholder="Здесь будет команда" readonly="readonly" class="copy" autocomplete='off'/>
+          </section>
+          <section class="field-row" style="justify-content: flex-end;">
+            <label for="ssh_pass_{{ task.id }}">Пароль</label>
+            <input id="ssh_pass_{{ task.id }}" type="text" placeholder="Здесь будет пароль" readonly="readonly" class="copy" autocomplete='off'/>
+          </section>
+          <section class="field-row" style="justify-content: flex-end;">
+            <button id="check_{{ task.id }}" class="check_button" disabled>Проверить</button>
+          </section>
+          <section class="field-row">
+            Статус:
+            <div role="progressbar" style="width: 100%; margin-left: 5px;" class="error animate">
+              <div id="progress_{{ task.id }}" style="width: 0%;"></div>
+            </div>
+          </section>
+          <section class="field-row">
+            Лог:
+            <div style="width: 100%;">
+              <pre id="log_{{ task.id }}" style="margin: 5px; background-color: black; color: #9f9f9f;"></pre>
+            </div>
+          </section>
+        </article>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+</body>
+</html>

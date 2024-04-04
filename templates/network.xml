@@ -1,0 +1,13 @@
+<network>
+    <name>{{ name }}</name>
+    <uuid>{{ uuid }}</uuid>
+    <forward mode='route'/>
+    <bridge name='virbr1' stp='on' delay='0'/>
+    <mac address='52:54:00:da:62:6b'/>
+    <domain name='network'/>
+    <ip address='192.168.101.1' netmask='255.255.255.0'>
+      <dhcp>
+        <range start='192.168.101.128' end='192.168.101.254'/>
+      </dhcp>
+    </ip>
+  </network>

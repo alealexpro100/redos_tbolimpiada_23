@@ -1,0 +1,20 @@
+body {
+    height: 100%;
+}
+
+
+body {
+    background-image: url('redos-1.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* For draggable windows */
+.active {
+    position: absolute;
+}
+
+input[disabled] {
+    pointer-events: none
+}
