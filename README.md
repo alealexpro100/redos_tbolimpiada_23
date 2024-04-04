@@ -1,3 +1,7 @@
+Файл `images/redos-min.qcow2` является образом виртаульной машины RED OS с включённым cloud-init.
+
+Папка images и файл выше создаются пользователем вручную.
+
 # For port forward
 ```bash
 chmod 755 port_forward.sh; chown root:root port_forward.sh
