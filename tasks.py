@@ -290,4 +290,28 @@ tasks_list_auto = [
         # To check use: touch /mnt/test; chmod 4666 /mnt/test
         check_cmd='if curl --head --fail "http://www.opennic.chan/" &>/dev/null; then echo "+ Сайты opennic доступны"; else echo "- Сайты opennic недоступны"; exit 1; fi;'
     ),
+    task(
+        name="SUDO",
+        text=div_b_p.format(B_PART='Описание', P_PART='Пользователь root обычно не используется для повседневных задач пользователя. Однако установка пакетов и прочие операции требуют root-прав, для использования которых сущуствует sudo.')
+            + div_b_p.format(B_PART='Задание', P_PART='Создать пользователя test и настроить sudo так, чтобы пользователь <i>test</i> мог его использовать без ввода пароля.'),
+        id="a9_sudo",
+        is_auto=True,
+        ci_add='',
+        # To check use: useradd -s /bin/bash -m test; echo 'test ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/test-user
+        check_cmd='if [[ -n $(cat /etc/passwd | grep test) ]]; then echo "+ Пользователь test существует"; else echo "- Пользователь test не существует"; exit 1; fi;' +
+            'if su test -c "timeout 2 sudo echo" &>/dev/null; then echo "+ Sudo настроен по заданию"; else echo "- Sudo не настроен по заданию"; exit 1; fi;'
+    ),
+    #echo | smbclient -L localhost/sambashare
+    task(
+        name="SAMBA",
+        text=div_b_p.format(B_PART='Описание', P_PART='SAMBA реализует протокол SMB на ОС Linux. С помощью него можно создавать так называемые "шары".')
+            + div_b_p.format(B_PART='Задание', P_PART='Нужно установить сервер и клиент samba и добавить шару `sambashare`. Анонимный пользователь должен видеть его наличие.'),
+        id="a10_samba",
+        is_auto=True,
+        ci_add='',
+        # To check use: dnf install -y samba samba-client; echo -e "\n[sambashare]\npath = /sambashare\nread only = No" >> /etc/samba/smb.conf; systemctl start smb
+        check_cmd='if [[ -n $(rpm -qa | grep samba) ]]; then echo "+ Пакет samba установлен"; else echo "- Пакет samba не установлен"; exit 1; fi;' +
+            'if [[ -n $(rpm -qa | grep samba-client) ]]; then echo "+ Пакет samba-client установлен"; else echo "- Пакет samba-client не установлен"; exit 1; fi;' +
+            'if [[ -n $(echo | smbclient -L localhost | grep sambashare) ]]; then echo "+ Samba шара найдена"; else echo "- Samba шара не найдена"; exit 1; fi;'
+    ),
 ]
