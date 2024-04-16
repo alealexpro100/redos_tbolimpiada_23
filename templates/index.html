@@ -100,7 +100,7 @@
       </section>
     </div>
   </div>
-  <div class="window glass active" style="width: 40em; left: 50em; top: 20em;">
+  <div class="window glass active" style="width: 50em; left: 50em; top: 20em;">
     <div class="title-bar">
       <div class="title-bar-text">Задания на автоматическую проверку</div>
       <div class="title-bar-controls">
@@ -110,7 +110,7 @@
       </div>
     </div>
     <div class="window-body has-space">
-      <section class="tabs" style="max-width: 500px">
+      <section class="tabs" style="max-width: 600px">
         <menu role="tablist" aria-label="Auto-check tasks">
           {% for task in tasks_list_auto %}
           <button role="tab" aria-controls="{{ task.id }}" {% if tasks_list_auto[0] == task %} aria-selected="true" {% endif %}>{{ task.name }}</button>
